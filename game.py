@@ -170,15 +170,16 @@ def zeroGame(player_list):
                     sum += p_thumb
             #정답을 맞춘 경우 정답자를 제외한 나머지 참여자들이 한잔씩 마시고 게임 종료
             if sum == answer:
-                nextPlayer = []
+                nextSelecter = []
                 for k in player_list:
                     if turn.name != k.name:
                         k.drink += 1
                         k.max -= 1
-                        
+                        nextSelecter.append(k.name)
                 print(f"👏👏👏{turn.name}(이)가 숫자를 맞췄습니다!")
                 print(f"🥃{turn.name}을 제외한 모든 참여자가 술을 마십니다!")
-                return
+  
+                return random.choice(nextSelecter)
 
 #############################################################################
 ####                        게임 시작 이전 초기화 작업                         ####
