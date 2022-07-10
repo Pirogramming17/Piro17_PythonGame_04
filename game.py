@@ -124,7 +124,7 @@ def play_369(player_list, idx_first):
             continue
           else:
             print(f"{player[turn].name} : {cp_choice}")
-            print(f"오답입니다! 이 잔(🍺)의 주인공은 {player_list[turn].name}입니다!🍺")
+            print(f"오답입니다! 이 잔(🍺)의 주인공은 {player[turn].name}입니다!🍺")
             for k in range (len(player)):
               if(player[turn] == player_list[k]):
                 player_list[k].max -= 1
