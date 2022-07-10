@@ -216,10 +216,10 @@ def zeroGame(player_list):
 ########  ######  ##  ###   #####            ##### ## ##   ##  ##   ##   ######
 ヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉ
     """)
-
-    random.shuffle(player_list)
+    order = player_list
+    random.shuffle(order)
     while(1):
-        for turn in player_list:
+        for turn in order:
             #참여자들이 올린 손가락 수의 합
             sum = 0
 
@@ -244,9 +244,12 @@ def zeroGame(player_list):
                         print("정수 값을 입력해주세요!")
                     else:
                         if answer > len(player_list)*2 or answer < 0:
-                            print(f"외칠 수 있는 숫자는 0 ~ {len(player_list)*2}개 입니다.")
-                        else:
-                            break
+                            print(f"🤪🤪🤪🤪🤪🤪🤪🤪 바보~ 외칠 수 있는 숫자는 0 ~ {len(player_list)*2}개 입니다!")
+                            print(f"👏👏👏{turn.name}(이)가 바보샷 당첨!")
+                            turn.drink += 1
+                            turn.max -= 1
+                            return turn.name
+                        break
             #현재 차례가 컴퓨터인 경우
             else:
                 answer = random.randint(0, len(player_list)*2)
