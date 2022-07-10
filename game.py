@@ -13,7 +13,7 @@ class RangeException(Exception):
 
 class Player:
   def __init__(self, name, max, drink, state):
-    self.name = name #이름
+    self.name = name #이름 v
     self.max = max #치사량
     self.drink = drink #마신 잔 수
     self.state = state #컴퓨터인지 사람인지
@@ -92,6 +92,57 @@ def play_369(player_list):
                     print(f"{player_list[turn].name} : {cp_choice}")
                     print(f"오답입니다! 이 잔(🍺)의 주인공은 {player_list[turn].name}입니다!🍺")
                     return curnum
+
+
+
+## 더게임오브데스 ##########################################################################################
+def play_thegameofdath(player_list):
+    print("#######                   #####                                           ######                             ")
+    print("   #    #    # ######    #     #   ##   #    # ######     ####  ######    #     # ######   ##   ##### #    # ")
+    print("   #    #    # #         #        #  #  ##  ## #         #    # #         #     # #       #  #    #   #    # ")
+    print("   #    ###### #####     #  #### #    # # ## # #####     #    # #####     #     # #####  #    #   #   ###### ")
+    print("   #    #    # #         #     # ###### #    # #         #    # #         #     # #      ######   #   #    # ")
+    print("   #    #    # #         #     # #    # #    # #         #    # #         #     # #      #    #   #   #    # ")
+    print("   #    #    # ######     #####  #    # #    # ######     ####  #         ######  ###### #    #   #   #    # ")
+
+
+
+    array = []
+
+    for i in range(len(player_list-1)):
+        array.append(player_list[i+1].name)
+    array.append(player_list[len(player_list)-1].name)
+    startman = random.choice(array)
+    startmannum = array.index(startman)
+    print(startman,'님이 술래! \U0001F601')
+    print('~~~~~ 아 신난다 \U0001F606 아 재미난다 \U0001F923 더 게임 오브 데 스! ~~~~~')
+    while True:
+        number = input('2이상 8이하의 정수를 외쳐 주세요! ')
+        if 2 > int(number) or 8 < int(number):
+            print('잘못된 숫자입니다. 다시입력해주세요!')
+        else:
+            break
+    array2 = []
+    for i in range(num+1):
+        numbering = [j for j in range(num+1)]
+        del numbering[i]
+        array2.append(random.choice(numbering))
+
+    for i in range(-num+startmannum-1,startmannum):
+        print(array[i], '\U0001F449',array[array2[i]])
+
+    for i in range(int(number)):
+        print(array[startmannum]," : ",i+1,'! \U0001F60E \U0001F449', array[array2[startmannum]])
+        startmannum = array.index(array[array2[startmannum]])
+        if i == int(number)-1:
+            print(array[startmannum]," : \U0001F92E")
+            for i range (len(player_list-1)):
+                if array[startmannum] = player_list[i].name:
+                    player_list[i].max -= 1
+                    player_list[i].brink += 1
+            return array[startmannum]
+############################################################################################################
+
 
 #############################################################################
 ####                        게임 시작 이전 초기화 작업                         ####
