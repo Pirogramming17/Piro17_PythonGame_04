@@ -109,9 +109,10 @@ def play_thegameofdath(player_list):
 
     array = []
 
-    for i in range(len(player_list-1)):
+    for i in range(len(player_list)-1):
+        num = len(player_list)-1
         array.append(player_list[i+1].name)
-    array.append(player_list[len(player_list)-1].name)
+    array.append(player_list[0].name)
     startman = random.choice(array)
     startmannum = array.index(startman)
     print(startman,'님이 술래! \U0001F601')
@@ -123,8 +124,8 @@ def play_thegameofdath(player_list):
         else:
             break
     array2 = []
-    for i in range(num+1):
-        numbering = [j for j in range(num+1)]
+    for i in range(len(player_list)):
+        numbering = [j for j in range(len(player_list))]
         del numbering[i]
         array2.append(random.choice(numbering))
 
@@ -136,10 +137,10 @@ def play_thegameofdath(player_list):
         startmannum = array.index(array[array2[startmannum]])
         if i == int(number)-1:
             print(array[startmannum]," : \U0001F92E")
-            for i range (len(player_list-1)):
-                if array[startmannum] = player_list[i].name:
+            for i in range (len(player_list)):
+                if array[startmannum] == player_list[i].name:
                     player_list[i].max -= 1
-                    player_list[i].brink += 1
+                    player_list[i].drink += 1
             return array[startmannum]
 ############################################################################################################
 
@@ -209,3 +210,9 @@ while(True):
 #############################################################################
 ####                           실제 게임 플레이 영역                          ####
 #############################################################################
+
+name =play_thegameofdath(player_list)
+print(name)
+for i in range(len(player_list)):
+
+ print(player_list[i].name,player_list[i].max,player_list[i].drink)
