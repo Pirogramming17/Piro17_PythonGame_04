@@ -1,5 +1,4 @@
 import random
-import copy
 
 player_list = []
 max_drink = {'1':2, '2':4, '3':6, '4':8, '5':10}
@@ -32,6 +31,7 @@ def computer_print(friends_num):
     print(f"오늘 함께 취할 친구는 {cname}입니다! (치사량 : {cmax})")
 
 def drink_print(player_list):
+  print('\n')
   for i in range (len(player_list)):
     print(f"{player_list[i].name}(은)는 지금까지 {player_list[i].drink}🍺! 치사량까지 {player_list[i].max}")
   print("\n")
@@ -40,7 +40,7 @@ def check_game_end(player_list):
   for i in range (len(player_list)):
     if(player_list[i].max == 0):
       print(f"{player_list[i].name}(이)가 전사했습니다 ... 꿈나라에서는 편히 쉬시길 ..zzz")
-      print("⊂((・▽・))⊃⊂((・▽・))⊃         🍺 다음에 술 마시면 또 불러주세요! 안녕! 🍺         ⊂((・▽・))⊃⊂((・▽・))⊃" )
+      print("⊂((・▽・))⊃⊂((・▽・))⊃  🍺 다음에 술 마시면 또 불러주세요! 안녕! 🍺  ⊂((・▽・))⊃⊂((・▽・))⊃" )
       exit()
 
 #############################################################################
@@ -154,12 +154,21 @@ def play_thegameofdeath(player_list):
     startmannum = array.index(startman)
     print(startman,'님이 술래! \U0001F601')
     print('~~~~~ 아 신난다 \U0001F606 아 재미난다 \U0001F923 더 게임 오브 데 스! ~~~~~')
-    while True:
-        number = input('2이상 8이하의 정수를 외쳐 주세요! ')
-        if 2 > int(number) or 8 < int(number):
-            print('잘못된 숫자입니다. 다시입력해주세요!')
-        else:
-            break
+    print(startman)
+    if startman == player_list[0].name:
+        while True:
+            try:
+                number = int(input('2이상 8이하의 정수를 외쳐 주세요! '))
+            except ValueError:
+                print("정수 값을 입력해주세요!")
+            else:
+                if 2 > number or 8 < number:
+                    print('잘못된 숫자입니다. 다시입력해주세요!')
+                else:
+                    break
+    else:
+        number = random.randint(2,8)
+        print('2이상 8이하의 정수를 외쳐 주세요! ',number)
     array2 = []
     for i in range(len(player_list)):
         numbering = [j for j in range(len(player_list))]
@@ -208,6 +217,7 @@ def zeroGame(player_list):
 ヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉ
     """)
 
+    random.shuffle(player_list)
     while(1):
         for turn in player_list:
             #참여자들이 올린 손가락 수의 합
@@ -222,9 +232,9 @@ def zeroGame(player_list):
             #컴퓨터가 들어올릴 손가락의 수
             c_thumb = 0
 
-            print("="*25)
+            print("="*30)
             print(f"👍{turn.name}의 차례입니다.")
-            print("="*25)
+            print("="*30)
             #현재 차례가 사람인 경우
             if turn.state == "player":
                 while(1):
@@ -275,8 +285,11 @@ def zeroGame(player_list):
                         k.drink += 1
                         k.max -= 1
                         nextSelecter.append(k.name)
+                print("@"*40)
                 print(f"👏👏👏{turn.name}(이)가 숫자를 맞췄습니다!")
                 print(f"🥃{turn.name}을 제외한 모든 참여자가 술을 마십니다!")
+                print("@"*40)
+
   
                 return random.choice(nextSelecter)
 
@@ -374,23 +387,26 @@ while(True):
         else:
           break;
       else:
-        choice = str(random.randint(1, 5))
-        print(f"{player_list[turn].name}이 좋아하는 랜덤~ 게임~ 무슨~ 게임~ 게임~ 스타트~ : ", choice)
-        break;
+        cont = input("술게임 진행중! 다른 사람의 턴입니다. 그만하고 싶으면 'exit'를, 계속 하시려면 아무 키나 눌러주세요! : ")
+        if(cont == 'exit'):
+          print("중간에 그만두시는군요..? 뭐 .. 그럴 수 있죠.. 아쉽지만 술게임을 종료합니다! 다음에 또 봐요 안녕~~~~")
+          exit()
+        else:
+          choice = str(random.randint(1, 5))
+          print(f"{player_list[turn].name}이 좋아하는 랜덤~ 게임~ 무슨~ 게임~ 게임~ 스타트~ : ", choice)
+          break;
     except Exception as e:
       print(e)
 
   # 369 게임
   if(choice == '1'):
     loser_name = play_369(player_list, turn)
-    print(loser_name)
     drink_print(player_list)
     check_game_end(player_list)
 
   # 더 게임 오브 데스
   elif(choice == '2'):
     loser_name = play_thegameofdeath(player_list)
-    print(loser_name)
     drink_print(player_list)
     check_game_end(player_list)
   
@@ -409,7 +425,6 @@ while(True):
   # 제로 게임
   elif(choice == '5'):
     loser_name = zeroGame(player_list)
-    print(loser_name)
     drink_print(player_list)
     check_game_end(player_list)
   
