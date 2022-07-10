@@ -158,11 +158,11 @@ def play_thegameofdeath(player_list):
     if startman == player_list[0].name:
         while True:
             try:
-                number = input('2이상 8이하의 정수를 외쳐 주세요! ')
+                number = int(input('2이상 8이하의 정수를 외쳐 주세요! '))
             except ValueError:
                 print("정수 값을 입력해주세요!")
             else:
-                if 2 > int(number) or 8 < int(number):
+                if 2 > number or 8 < number:
                     print('잘못된 숫자입니다. 다시입력해주세요!')
                 else:
                     break
