@@ -210,7 +210,6 @@ def play_sonbyungho(player_list):
     print("""˚⋆☂˚｡⋆｡˚☽˚｡⋆..⋆｡⋆☂˚｡⋆｡˚☽˚｡⋆..⋆｡⋆☂˚｡⋆｡˚☽˚｡⋆..⋆｡⋆☂˚｡⋆｡˚☽˚｡⋆..⋆｡⋆☂˚｡⋆｡˚☽˚｡⋆.""")
     print("지금부터 손병호 게임을 시작합니다.")
     print("여러분들은 모두 손가락을 펴주시길 바라겠습니다.")
-    
             
     #질문 리스트
     que_li = ["염색한 사람 접어","반지 낀 사람 접어" \
@@ -225,19 +224,21 @@ def play_sonbyungho(player_list):
               ,"부먹인 사람 접어","찍먹인 사람 접어","소주파인 사람 접어","맥주파인 사람 접어","소맥파인 사람 접어"\
               ]    
     
+    finger = [5,5,5,5]
+    choice_list = ['y', 'n']
+
     while(1):
-        for turn in player_list:
+        for turn in range(len(player_list)):
             #각 참여자들의 손가락 개수
-            finger = [5,5,5,5]
-            
+
             print("="*25)
-            print(f"👍{turn.name}의 차례입니다.")
+            print(f"👍{player_list[turn].name}의 차례입니다.")
             print("="*25)
             #현재 차례가 사람인 경우
-            if turn.state == "player":
+            if player_list[turn].state == "player":
                 while(1):
                     try:
-                        choice = int(input("접을 사람을 골라주세요!(0-30)"))
+                        choice = int(input("접을 사람을 골라주세요!(0-30) ")) #문제를 골라주세요
                     except ValueError:
                         print("정수 값을 입력해주세요!")
                     else:
@@ -250,44 +251,46 @@ def play_sonbyungho(player_list):
             #현재 차례가 컴퓨터인 경우
             else:
                 choice = random.randint(0, 30)
+                print(que_li[choice])
 
             #사람이 선택할 답변
             while(1):
                 try:
-                    p_answer = input("손가락을 접을까요?(y/n)")                    
-                except ValueError:
-                    print("정수 값을 입력해주세요!")
+                    p_answer = input("손가락을 접을까요?(y/n) ")
+                    if(p_answer != "y" and p_answer != "n"):
+                      raise RangeException
+                except Exception as e:
+                    print(e)
                 else:
-                    if (p_answer != 'y' or p_answer != 'n') :
-                        print("y와 n 중에서 선택해주세요!")
-                    else:                       
-                        break
+                    break
         
             #컴퓨터가 고를 답변
-            for j in player_list:
-                if j.state != "player":
-                    if turn.name == j.name:
-                        c_answer = random.randint(0, 1)
-                        if (c_answer=='y'):
-                            print(f"{j.name}(이)가 손가락을 접었습니다. ")
-                            finger[j] -= 1
+            for j in range(len(player_list)):
+                if player_list[j].state != "player":
+                    c_answer = random.choice(choice_list)
+                    if (c_answer=='y'):
+                        print(f"{player_list[j].name}(이)가 손가락을 접었습니다. ")
+                        finger[j] -= 1
                 else:
                     if(p_answer == 'y'):
-                        print(f"{j.name}(이)가 손가락을 접었습니다. ")
+                        print(f"{player_list[j].name}(이)가 손가락을 접었습니다. ")
                         finger[j] -= 1        
 
             #누군가의 손가락이 다 소진되면 그 사람이 술 마시고 종료
             #여러명이면 랜덤으로 선택
             if (finger[0] == 0 or finger[1] == 0 or finger[2] == 0 or finger[3] == 0):
                 nextSelecter = []
-                for k in player_list:
-                    if turn.name == k.name:
-                        k.drink += 1
-                        k.max -= 1
-                        nextSelecter.append(k.name)
-                print(f"👏👏👏{turn.name}(이)의 손가락이 모두 접혔습니다!")
-                print(f"🥃{turn.name}가 술을 마십니다!")
-  
+                for k in range(len(player_list)):
+                  if finger[k] == 0:
+                    player_list[k].drink += 1
+                    player_list[k].max -= 1
+                    nextSelecter.append(player_list[k].name)
+                    print(f"👏👏👏{player_list[k].name}(이)의 손가락이 모두 접혔습니다!")
+                
+                for l in range(len(nextSelecter)):
+                  print(nextSelecter[l], end = '')
+                  print("가 술을 마십니다!🥃")
+
                 return random.choice(nextSelecter)
 
 #############################################################################
@@ -510,7 +513,7 @@ while(True):
   
   # 손병호 게임
   elif(choice == '3'):
-    loser_name = 
+    loser_name = play_sonbyungho(player_list)
     drink_print(player_list)
     check_game_end(player_list)
 
