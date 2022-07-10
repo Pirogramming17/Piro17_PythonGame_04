@@ -73,5 +73,3 @@ def play_369():
                     return curnum
 
 res = play_369()
-print(res)
-print(type(res))
