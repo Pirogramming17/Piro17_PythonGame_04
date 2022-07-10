@@ -154,12 +154,21 @@ def play_thegameofdeath(player_list):
     startmannum = array.index(startman)
     print(startman,'님이 술래! \U0001F601')
     print('~~~~~ 아 신난다 \U0001F606 아 재미난다 \U0001F923 더 게임 오브 데 스! ~~~~~')
-    while True:
-        number = input('2이상 8이하의 정수를 외쳐 주세요! ')
-        if 2 > int(number) or 8 < int(number):
-            print('잘못된 숫자입니다. 다시입력해주세요!')
-        else:
-            break
+    print(startman)
+    if startman == player_list[0].name:
+        while True:
+            try:
+                number = input('2이상 8이하의 정수를 외쳐 주세요! ')
+            except ValueError:
+                print("정수 값을 입력해주세요!")
+            else:
+                if 2 > int(number) or 8 < int(number):
+                    print('잘못된 숫자입니다. 다시입력해주세요!')
+                else:
+                    break
+    else:
+        number = random.randint(2,8)
+        print('2이상 8이하의 정수를 외쳐 주세요! ',number)
     array2 = []
     for i in range(len(player_list)):
         numbering = [j for j in range(len(player_list))]
