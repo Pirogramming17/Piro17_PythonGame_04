@@ -1,5 +1,4 @@
 import random
-import copy
 
 player_list = []
 max_drink = {'1':2, '2':4, '3':6, '4':8, '5':10}
@@ -390,7 +389,7 @@ while(True):
       else:
         cont = input("술게임 진행중! 다른 사람의 턴입니다. 그만하고 싶으면 'exit'를, 계속 하시려면 아무 키나 눌러주세요! : ")
         if(cont == 'exit'):
-          print("중간에 그만두시는군요..? 그럴 수 있죠! 술게임을 종료합니다! 다음에 또 봐요 안녕~~~~")
+          print("중간에 그만두시는군요..? 뭐 .. 그럴 수 있죠.. 아쉽지만 술게임을 종료합니다! 다음에 또 봐요 안녕~~~~")
           exit()
         else:
           choice = str(random.randint(1, 5))
