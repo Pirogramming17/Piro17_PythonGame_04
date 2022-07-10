@@ -217,6 +217,7 @@ def zeroGame(player_list):
 ヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉ
     """)
 
+    random.shuffle(player_list)
     while(1):
         for turn in player_list:
             #참여자들이 올린 손가락 수의 합
@@ -231,9 +232,9 @@ def zeroGame(player_list):
             #컴퓨터가 들어올릴 손가락의 수
             c_thumb = 0
 
-            print("="*25)
+            print("="*30)
             print(f"👍{turn.name}의 차례입니다.")
-            print("="*25)
+            print("="*30)
             #현재 차례가 사람인 경우
             if turn.state == "player":
                 while(1):
@@ -284,8 +285,11 @@ def zeroGame(player_list):
                         k.drink += 1
                         k.max -= 1
                         nextSelecter.append(k.name)
+                print("@"*40)
                 print(f"👏👏👏{turn.name}(이)가 숫자를 맞췄습니다!")
                 print(f"🥃{turn.name}을 제외한 모든 참여자가 술을 마십니다!")
+                print("@"*40)
+
   
                 return random.choice(nextSelecter)
 
