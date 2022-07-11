@@ -1,4 +1,5 @@
 import random
+import copy
 import requests
 from bs4 import BeautifulSoup as bs
 import re
@@ -81,7 +82,7 @@ def crawl_station():
     return stations
 
 #############################################################################
-####                             1. 369 GAME                             ####
+####                         1. 369 GAME  - 도윤                           ####
 #############################################################################
 def replace_curnum(curnum):
     st_curnum = "{}".format(curnum)
@@ -170,7 +171,7 @@ def play_369(player_list, idx_first):
 
 
 #############################################################################
-####                       2. The Game Of Death                          ####
+####                   2. The Game Of Death  - 석범                       ####
 #############################################################################
 def play_thegameofdeath(player_list):
     print("#######                   #####                                           ######                             ")
@@ -228,7 +229,7 @@ def play_thegameofdeath(player_list):
 
 
 #############################################################################
-####                            3. 손병호 게임                             ####
+####                           3. 손병호 게임 - 나현                         ####
 #############################################################################
 def play_sonbyungho(player_list):
     #인트로
@@ -250,14 +251,14 @@ def play_sonbyungho(player_list):
             
     #질문 리스트
     que_li = ["염색한 사람 접어","반지 낀 사람 접어" \
-              ,"반지 낀 사람 접어","반바지 입은 사람 접어"\
+              ,"반바지 입은 사람 접어"\
               ,"술 마시고 싶은 사람 접어","집 가고 싶은 사람 접어"\
               ,"밤 샌 사람 접어","겨울 좋은 사람 접어","여름 좋은 사람 접어"\
               ,"여행 가고 싶은 사람 접어","번지점프 해본 사람 접어"\
               ,"개발자 되고 싶은 사람 접어","누나 있는 사람 접어","언니 있는 사람 접어"\
               ,"여동생 있는 사람 접어","오빠 있는 사람 접어","형 있는 사람 접어"\
               ,"남동생 있는 사람 접어","17학번 접어","18학번 접어","19학번 접어","20학번 접어"\
-              "21학번 접어","22학번 접어","민트초코 안먹는 사람 접어","민트초코 먹는 사람 접어"\
+              ,"21학번 접어","22학번 접어","민트초코 안먹는 사람 접어","민트초코 먹는 사람 접어"\
               ,"부먹인 사람 접어","찍먹인 사람 접어","소주파인 사람 접어","맥주파인 사람 접어","소맥파인 사람 접어"\
               ]    
     
@@ -275,20 +276,20 @@ def play_sonbyungho(player_list):
             if player_list[turn].state == "player":
                 while(1):
                     try:
-                        choice = int(input("접을 사람을 골라주세요!(0-30) ")) #문제를 골라주세요
+                        choice = int(input("접을 사람을 골라주세요!(1-30) ")) #문제를 골라주세요
                     except ValueError:
                         print("정수 값을 입력해주세요!")
                     else:
-                        if choice > 30 or choice < 0:
-                            print("0 ~ 30사이에서 골라주세요!")
+                        if choice > 30 or choice < 1:
+                            print("1 ~ 30사이에서 골라주세요!")
                         else:
-                            print(que_li[choice])
+                            print(que_li[choice-1])
                             break
                         
             #현재 차례가 컴퓨터인 경우
             else:
-                choice = random.randint(0, 30)
-                print(que_li[choice])
+                choice = random.randint(1, 30)
+                print(que_li[choice-1])
 
             #사람이 선택할 답변
             while(1):
@@ -331,10 +332,9 @@ def play_sonbyungho(player_list):
                 return random.choice(nextSelecter)
 
 #############################################################################
-####                            4. 지하철 게임                             ####
+####                     4. 지하철 게임 (크롤링) - 한서                       ####
 #############################################################################
 def subway_game(player_list):
-    # 크롤링한 역 이름 목록 crawl_station함수로 만들어서 import하여 실행 (crawl_station.py파일이 같은 경로 안에 있어줘야 실행)
     STATIONS = crawl_station()
 
     print("===================================================================================")
@@ -363,26 +363,46 @@ def subway_game(player_list):
     i = 0
     while 1:
         player = player_list[i]
-        answer = input(f"[{player.name}] {station} 역을 입력하세요.: ")
-        if answer not in STATIONS[station]:  # answer가 역 이름 목록 안에 없을 때
-            print("🤪탈락!!!!!!!!!!!그런 역은 없지!!한 잔(🍺) 마시기!!!")
-            player.drink += 1
-            player.max -= 1
-            return player.name
+        if player.state == 'player':
+            answer = input(f"[{player.name}] {station} 역을 입력하세요.: ")
+            if answer not in STATIONS[station]:  # answer가 역 이름 목록 안에 없을 때
+                print("🤪탈락!!!!!!!!!!!그런 역은 없지!!한 잔(🍺) 마시기!!!")
+                player.drink += 1
+                player.max -= 1
+                return player.name
 
-        if answer in visited:
-            print("🤪탈락!!!!!!!!!!이미 했지!!!한 잔(🍺) 마시기!!!")
-            player.drink += 1
-            player.max -= 1
-            return player_list[i].name
+            if answer in visited:
+                print("🤪탈락!!!!!!!!!!이미 했지!!!한 잔(🍺) 마시기!!!")
+                player.drink += 1
+                player.max -= 1
+                return player_list[i].name
+            else:
+                visited += [answer]
+                print("정답입니다!")
+
         else:
-            visited += [answer]
-            print("정답입니다!")
+            answer = random.choice(STATIONS[station])
+            print(f"[{player.name}]  {answer}")
+            if answer not in STATIONS[station]:  # answer가 역 이름 목록 안에 없을 때
+                print("🤪탈락!!!!!!!!!!!그런 역은 없지!!한 잔(🍺) 마시기!!!")
+                player.drink += 1
+                player.max -= 1
+                return player.name
+
+            if answer in visited:
+                print("🤪탈락!!!!!!!!!!이미 했지!!!한 잔(🍺) 마시기!!!")
+                player.drink += 1
+                player.max -= 1
+                return player_list[i].name
+            else:
+                visited += [answer]
+                print("정답입니다!")
+
         i += 1
         i %= len(player_list)
 
 #############################################################################
-####                           5. ZERO GAME                              ####
+####                         5. ZERO GAME - 석현                          ####
 #############################################################################
 def zeroGame(player_list):
     #인트로
@@ -397,7 +417,8 @@ def zeroGame(player_list):
 ########  ######  ##  ###   #####            ##### ## ##   ##  ##   ##   ######
 ヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉヽ(･̑ᴗ･̑)ﾉ
     """)
-    order = player_list
+    order = []
+    order = player_list.copy()
     random.shuffle(order)
     while(1):
         for turn in order:
@@ -471,10 +492,9 @@ def zeroGame(player_list):
                         nextSelecter.append(k.name)
                 print("@"*40)
                 print(f"👏👏👏{turn.name}(이)가 숫자를 맞췄습니다!")
-                print(f"🥃{turn.name}을 제외한 모든 참여자가 술을 마십니다!")
+                print(f"🥃{turn.name}을/를 제외한 모든 참여자가 술을 마십니다!")
                 print("@"*40)
 
-  
                 return random.choice(nextSelecter)
 
 
@@ -565,7 +585,7 @@ while(True):
   while(True):
     try:
       if(player_list[turn].state == 'player'):
-        choice = input(f"{player_list[turn].name}이 좋아하는 랜덤~ 게임~ 무슨~ 게임~ 게임~ 스타트~ : ")
+        choice = input(f"{player_list[turn].name}이(가) 좋아하는 랜덤~ 게임~ 무슨~ 게임~ 게임~ 스타트~ : ")
         if(choice != '1' and choice != '2' and choice != '3' and choice != '4' and choice != '5'):
           raise RangeException()
         else:
@@ -593,7 +613,7 @@ while(True):
     loser_name = play_thegameofdeath(player_list)
     drink_print(player_list)
     check_game_end(player_list)
-  
+
   # 손병호 게임
   elif(choice == '3'):
     loser_name = play_sonbyungho(player_list)
@@ -612,6 +632,7 @@ while(True):
     drink_print(player_list)
     check_game_end(player_list)
   
+  # 다음 차례의 사람을 선택
   for i in range(len(player_list)):
     if(player_list[i].name == loser_name):
       turn = i
