@@ -170,7 +170,7 @@ def play_369(player_list, idx_first):
                 return player_list[k].name
 
 
-#############################################################################
+##############################################################################
 ####                   2. The Game Of Death  - 석범                       ####
 #############################################################################
 def play_thegameofdeath(player_list):
@@ -188,9 +188,9 @@ def play_thegameofdeath(player_list):
         num = len(player_list)-1
         array.append(player_list[i+1].name)
     array.append(player_list[0].name)
-    startman = random.choice(array)
+    startman = player_list[turn].name
     startmannum = array.index(startman)
-    print(startman,'님이 술래! \U0001F601')
+    print(startman, '님이 술래! \U0001F601')
     print('~~~~~ 아 신난다 \U0001F606 아 재미난다 \U0001F923 더 게임 오브 데 스! ~~~~~')
     print(startman)
     if startman == player_list[0].name:
@@ -205,27 +205,29 @@ def play_thegameofdeath(player_list):
                 else:
                     break
     else:
-        number = random.randint(2,8)
-        print('2이상 8이하의 정수를 외쳐 주세요! ',number)
+        number = random.randint(2, 8)
+        print('2이상 8이하의 정수를 외쳐 주세요! ', number)
     array2 = []
     for i in range(len(player_list)):
         numbering = [j for j in range(len(player_list))]
         del numbering[i]
         array2.append(random.choice(numbering))
 
-    for i in range(-num+startmannum-1,startmannum):
-        print(array[i], '\U0001F449',array[array2[i]])
+    for i in range(-num+startmannum-1, startmannum):
+        print(array[i], '\U0001F449', array[array2[i]])
 
     for i in range(int(number)):
-        print(array[startmannum]," : ",i+1,'! \U0001F60E \U0001F449', array[array2[startmannum]])
+        print(array[startmannum], " : ", i+1,
+              '! \U0001F60E \U0001F449', array[array2[startmannum]])
         startmannum = array.index(array[array2[startmannum]])
         if i == int(number)-1:
-            print(array[startmannum]," : \U0001F92E")
-            for i in range (len(player_list)):
+            print(array[startmannum], " : \U0001F92E")
+            for i in range(len(player_list)):
                 if array[startmannum] == player_list[i].name:
                     player_list[i].max -= 1
                     player_list[i].drink += 1
             return array[startmannum]
+
 
 
 #############################################################################
@@ -352,11 +354,20 @@ def subway_game(player_list):
     print("===================================================================================")
     print("~~~~~~~~~~~~~~~~~~~~~~~~지하철! 지하철! 지하철! 지하철!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
+    player = player_list[turn]
     while 1:  # 호선 입력
-        station = input("몇호선~~~~몇호선~~~~??(입력형식 : 0호선) : ")
-        if station in STATIONS.keys():
+        
+
+        if player.state == 'player':
+            station = input("몇호선~~~~몇호선~~~~??(입력형식 : 0호선) : ")
+            if station in STATIONS.keys():
+                break
+            print("없는 노선입니다. 지하철 노선 이름을 정확히 입력하세요.")
+        else:
+            print("몇호선~~~~몇호선~~~~??")
+            station = random.choice(list(STATIONS.keys()))
+            print(f"{station}이 선택됐습니다.")
             break
-        print("없는 노선입니다. 지하철 노선 이름을 정확히 입력하세요.")
 
     visited = []  # 한 번 대답한 역 이름 모아두는 곳
 
@@ -375,14 +386,16 @@ def subway_game(player_list):
                 print("🤪탈락!!!!!!!!!!이미 했지!!!한 잔(🍺) 마시기!!!")
                 player.drink += 1
                 player.max -= 1
+
                 return player_list[i].name
+                break
             else:
                 visited += [answer]
                 print("정답입니다!")
 
         else:
-            answer = random.choice(STATIONS[station])
-            print(f"[{player.name}]  {answer}")
+            answer = random.choice(random.choice(list(STATIONS.values())))
+            print(f"[{player.name}] ", answer)
             if answer not in STATIONS[station]:  # answer가 역 이름 목록 안에 없을 때
                 print("🤪탈락!!!!!!!!!!!그런 역은 없지!!한 잔(🍺) 마시기!!!")
                 player.drink += 1
@@ -394,6 +407,7 @@ def subway_game(player_list):
                 player.drink += 1
                 player.max -= 1
                 return player_list[i].name
+                break
             else:
                 visited += [answer]
                 print("정답입니다!")
@@ -467,7 +481,7 @@ def zeroGame(player_list):
                         print("올릴 수 있는 엄지 손가락의 개수는 0 ~ 2개 입니다.")
                     else:
                         break
-                     
+                  
             print(f"{turn.name} : {answer}!!")
 
             #컵퓨터가 들어올릴 손가락의 수 설정
