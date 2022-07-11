@@ -1,4 +1,7 @@
 import random
+import requests
+from bs4 import BeautifulSoup as bs
+import re
 
 player_list = []
 max_drink = {'1':2, '2':4, '3':6, '4':8, '5':10}
@@ -26,7 +29,7 @@ def computer_print(friends_num):
   for i in range (friends_num):
     cname = random.choice(computer_name)
     computer_name.remove(cname)
-    cmax = random.randint(1,10)
+    cmax = random.randint(2,10)
     player_list.append(Player(cname, cmax, 0, 'computer'))
     print(f"오늘 함께 취할 친구는 {cname}입니다! (치사량 : {cmax})")
 
@@ -42,6 +45,40 @@ def check_game_end(player_list):
       print(f"{player_list[i].name}(이)가 전사했습니다 ... 꿈나라에서는 편히 쉬시길 ..zzz")
       print("⊂((・▽・))⊃⊂((・▽・))⊃  🍺 다음에 술 마시면 또 불러주세요! 안녕! 🍺  ⊂((・▽・))⊃⊂((・▽・))⊃" )
       exit()
+
+def crawl_station():
+    headers = {
+        'Referer': 'http://www.seoulmetro.co.kr/kr/cyberStation.do?menuIdx=538',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+    }
+
+    response = requests.get(
+        'http://www.seoulmetro.co.kr/kr/getLineData.do', headers=headers, verify=False)
+
+    soup = bs(response.text, "html.parser")
+
+    linename = re.compile('{}(.*){}'.format(re.escape('"data-label" : "'),
+                        re.escape('"'))).findall(response.text)
+    stname = re.compile('{}|{}(.*){}'.format(re.escape('"data-label" : "'),
+                        re.escape('"station-nm": "'), re.escape('"'))).findall(response.text)
+    del stname[0]
+
+    stname.append("")
+
+    stations = {}
+    for i in range(len(linename)):
+        line = []
+
+        while True:
+            if stname[0] == "":
+                del stname[0]
+                break
+            line.append(stname[0].replace("\\n", " "))
+            del stname[0]
+
+        stations[linename[i]] = line
+    
+    return stations
 
 #############################################################################
 ####                             1. 369 GAME                             ####
@@ -296,7 +333,53 @@ def play_sonbyungho(player_list):
 #############################################################################
 ####                            4. 지하철 게임                             ####
 #############################################################################
+def subway_game(player_list):
+    # 크롤링한 역 이름 목록 crawl_station함수로 만들어서 import하여 실행 (crawl_station.py파일이 같은 경로 안에 있어줘야 실행)
+    STATIONS = crawl_station()
 
+    print("===================================================================================")
+    print("""
+     _____         _                               _____                         
+    /  ___|       | |                             |  __ \                        
+    \ `--.  _   _ | |__  __      __  __ _  _   _  | |  \/  __ _  _ __ ___    ___ 
+     `--. \| | | || '_ \ \ \ /\ / / / _` || | | | | | __  / _` || '_ ` _ \  / _  
+    /\__/ /| |_| || |_) | \ V  V / | (_| || |_| | | |_\ \| (_| || | | | | ||  __/
+    \____/  \__,_||_.__/   \_/\_/   \__,_| \__, |  \____/ \__,_||_| |_| |_| \___|
+                                            __/ |                                
+                                           |___ /                                 
+    """)
+
+    print("===================================================================================")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~지하철! 지하철! 지하철! 지하철!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+    while 1:  # 호선 입력
+        station = input("몇호선~~~~몇호선~~~~??(입력형식 : 0호선) : ")
+        if station in STATIONS.keys():
+            break
+        print("없는 노선입니다. 지하철 노선 이름을 정확히 입력하세요.")
+
+    visited = []  # 한 번 대답한 역 이름 모아두는 곳
+
+    i = 0
+    while 1:
+        player = player_list[i]
+        answer = input(f"[{player.name}] {station} 역을 입력하세요.: ")
+        if answer not in STATIONS[station]:  # answer가 역 이름 목록 안에 없을 때
+            print("🤪탈락!!!!!!!!!!!그런 역은 없지!!한 잔(🍺) 마시기!!!")
+            player.drink += 1
+            player.max -= 1
+            return player.name
+
+        if answer in visited:
+            print("🤪탈락!!!!!!!!!!이미 했지!!!한 잔(🍺) 마시기!!!")
+            player.drink += 1
+            player.max -= 1
+            return player_list[i].name
+        else:
+            visited += [answer]
+            print("정답입니다!")
+        i += 1
+        i %= len(player_list)
 
 #############################################################################
 ####                           5. ZERO GAME                              ####
@@ -518,10 +601,10 @@ while(True):
     check_game_end(player_list)
 
 # 지하철 게임
-  # elif(choice == '4'):
-  #   loser_name = 
-  #   drink_print(player_list)
-  #   check_game_end(player_list)
+  elif(choice == '4'):
+    loser_name = subway_game(player_list)
+    drink_print(player_list)
+    check_game_end(player_list)
   
   # 제로 게임
   elif(choice == '5'):
