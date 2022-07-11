@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import re
 
+
 def crawl_station():
     headers = {
         'Referer': 'http://www.seoulmetro.co.kr/kr/cyberStation.do?menuIdx=538',
@@ -14,7 +15,7 @@ def crawl_station():
     soup = bs(response.text, "html.parser")
 
     linename = re.compile('{}(.*){}'.format(re.escape('"data-label" : "'),
-                        re.escape('"'))).findall(response.text)
+                                            re.escape('"'))).findall(response.text)
     stname = re.compile('{}|{}(.*){}'.format(re.escape('"data-label" : "'),
                         re.escape('"station-nm": "'), re.escape('"'))).findall(response.text)
     del stname[0]
@@ -33,5 +34,5 @@ def crawl_station():
             del stname[0]
 
         stations[linename[i]] = line
-    
+
     return stations
